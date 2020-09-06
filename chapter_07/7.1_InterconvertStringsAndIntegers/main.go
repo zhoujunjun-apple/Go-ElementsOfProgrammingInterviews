@@ -66,6 +66,7 @@ func SubstractStrToInt(intStr string) int {
 	return intVal
 }
 
+//DigitToString convert single digit to string
 var DigitToString = map[int]string{
 	0: "0",
 	1: "1",
