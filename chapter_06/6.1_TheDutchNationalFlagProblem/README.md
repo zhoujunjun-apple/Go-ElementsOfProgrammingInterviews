@@ -1,2 +1,2 @@
-TheDutchNationFlagProblem
+### TheDutchNationFlagProblem
 Given array A and pivot P(index idx), reorder array A so that all elements less than the pivot appear first, followed by elements equal to the pivot, followed by elements greater than the pivot.
