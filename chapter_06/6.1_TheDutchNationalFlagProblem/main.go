@@ -39,6 +39,46 @@ func ThreeBucket(nums []int, pivotIdx int) (newPivotIdx int) {
 	return
 }
 
+//BruteForce function first rearrange less-than-pivot part, then rearrange large-than-pivot part.
+//O(1) space and O(N*N) time
+func BruteForce(nums []int, pivotIdx int) (newPivotIdx int) {
+	newPivotIdx = pivotIdx
+	if pivotIdx < 0 || pivotIdx >= len(nums) {
+		return
+	}
+
+	pivotVal := nums[pivotIdx]
+
+	lessTop := 0
+	for ; lessTop < len(nums); lessTop++ {
+		for lookIdx := lessTop + 1; lookIdx < len(nums); lookIdx++ {
+			if nums[lookIdx] < pivotVal {
+				swap(nums, lookIdx, lessTop)
+				break
+			}
+		}
+	}
+	newPivotIdx = lessTop
+	//at this point, all items less than pivot has been put at right position
+
+	for largeTop := len(nums) - 1; largeTop >= lessTop; largeTop-- {
+		for lookIdx := largeTop - 1; lookIdx >= lessTop; lookIdx-- {
+			if nums[lookIdx] > pivotVal {
+				swap(nums, lookIdx, largeTop)
+				break
+			}
+		}
+	}
+	//at that point, all items larger than pivot has been put at right positon
+	//items equal to pivot automatically been put at the middle of array
+
+	return
+}
+
+func swap(nums []int, i, j int) {
+	nums[i], nums[j] = nums[j], nums[i]
+}
+
 func main() {
 
 }
