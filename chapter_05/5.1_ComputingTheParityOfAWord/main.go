@@ -37,4 +37,15 @@ func DropLowestSetParity(word int8) int8 {
 	return oneCount
 }
 
+//RightShiftParity function shift 6 times to get the parity value. O(logN) time
+func RightShiftParity(word int64) int64 {
+	word ^= word >> 32
+	word ^= word >> 16
+	word ^= word >> 8
+	word ^= word >> 4
+	word ^= word >> 2
+	word ^= word >> 1
+	return word & 0x1
+}
+
 func main() {}
