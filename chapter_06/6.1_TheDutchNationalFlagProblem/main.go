@@ -121,17 +121,47 @@ func SingleScan(nums []int, pivotIdx int) (newPivotIdx int) {
 	for equal < large {
 		item := nums[equal]
 		if item > pivotVal {
-			large--
+			large-- //don't update equal, because swaped nums[large] need to recheck
 			swap(nums, equal, large)
 		} else if item < pivotVal {
 			swap(nums, equal, less)
-			equal++
+			equal++ //update equal, because nums[equal] have in right position, no need to recheck
 			less++
 		} else {
 			equal++
 		}
 	}
 	newPivotIdx = less
+	return
+}
+
+//SingleScanBackward function like SingleScan, but use a backward scan order
+//[0, less] contains items less than pivot;
+//(less, equal] contains items not classified;
+//(equal, large] contains items equal to pivot;
+//(large, len(nums)-1] contains items large than pivot;
+func SingleScanBackward(nums []int, pivotIdx int) (newPivotIdx int) {
+	newPivotIdx = pivotIdx
+	if pivotIdx < 0 || pivotIdx >= len(nums) {
+		return
+	}
+
+	pivotVal := nums[pivotIdx]
+	less, equal, large := -1, len(nums)-1, len(nums)-1
+	for equal > less {
+		item := nums[equal]
+		if item > pivotVal {
+			swap(nums, equal, large)
+			large--
+			equal--
+		} else if item < pivotVal {
+			less++
+			swap(nums, less, equal)
+		} else {
+			equal--
+		}
+	}
+	newPivotIdx = equal + 1
 	return
 }
 
