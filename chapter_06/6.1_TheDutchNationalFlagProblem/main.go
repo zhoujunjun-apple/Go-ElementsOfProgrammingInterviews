@@ -50,19 +50,20 @@ func BruteForce(nums []int, pivotIdx int) (newPivotIdx int) {
 	pivotVal := nums[pivotIdx]
 
 	lessTop := 0
+	newPivotIdx = lessTop
 	for ; lessTop < len(nums); lessTop++ {
 		for lookIdx := lessTop + 1; lookIdx < len(nums); lookIdx++ {
 			if nums[lookIdx] < pivotVal {
 				swap(nums, lookIdx, lessTop)
+				newPivotIdx = lessTop + 1
 				break
 			}
 		}
 	}
-	newPivotIdx = lessTop
 	//at this point, all items less than pivot has been put at right position
 
-	for largeTop := len(nums) - 1; largeTop >= lessTop; largeTop-- {
-		for lookIdx := largeTop - 1; lookIdx >= lessTop; lookIdx-- {
+	for largeTop := len(nums) - 1; largeTop >= newPivotIdx; largeTop-- {
+		for lookIdx := largeTop - 1; lookIdx >= newPivotIdx; lookIdx-- {
 			if nums[lookIdx] > pivotVal {
 				swap(nums, lookIdx, largeTop)
 				break
