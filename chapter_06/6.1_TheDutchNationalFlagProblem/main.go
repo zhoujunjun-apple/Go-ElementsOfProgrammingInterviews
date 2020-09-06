@@ -76,6 +76,35 @@ func BruteForce(nums []int, pivotIdx int) (newPivotIdx int) {
 	return
 }
 
+//DoubleScan function improve BruteForce solution to O(N) time
+func DoubleScan(nums []int, pivotIdx int) (newPivotIdx int) {
+	newPivotIdx = pivotIdx
+	if pivotIdx < 0 || pivotIdx >= len(nums) {
+		return
+	}
+
+	pivotVal := nums[pivotIdx]
+
+	lessTop := 0
+	newPivotIdx = lessTop
+	for lookIdx := 0; lookIdx < len(nums); lookIdx++ {
+		if nums[lookIdx] < pivotVal {
+			swap(nums, lookIdx, lessTop)
+			lessTop++
+			newPivotIdx = lessTop
+		}
+	}
+
+	largeTop := len(nums) - 1
+	for lookIdx := len(nums) - 1; lookIdx >= newPivotIdx; lookIdx-- {
+		if nums[lookIdx] > pivotVal {
+			swap(nums, lookIdx, largeTop)
+			largeTop--
+		}
+	}
+	return
+}
+
 func swap(nums []int, i, j int) {
 	nums[i], nums[j] = nums[j], nums[i]
 }
