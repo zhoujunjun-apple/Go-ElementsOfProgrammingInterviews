@@ -105,6 +105,36 @@ func DoubleScan(nums []int, pivotIdx int) (newPivotIdx int) {
 	return
 }
 
+//SingleScan improve code simplisity by combining two scan from DoubleScan into single scan
+//[0, less) contains items less than pivot;
+//[less, equal) contains items equal than pivot;
+//[equal, large) contains items to be classified;
+//[large, len(nums)-1] contains items larger than pivot;
+func SingleScan(nums []int, pivotIdx int) (newPivotIdx int) {
+	newPivotIdx = pivotIdx
+	if pivotIdx < 0 || pivotIdx >= len(nums) {
+		return
+	}
+
+	pivotVal := nums[pivotIdx]
+	less, equal, large := 0, 0, len(nums)
+	for equal < large {
+		item := nums[equal]
+		if item > pivotVal {
+			large--
+			swap(nums, equal, large)
+		} else if item < pivotVal {
+			swap(nums, equal, less)
+			equal++
+			less++
+		} else {
+			equal++
+		}
+	}
+	newPivotIdx = less
+	return
+}
+
 func swap(nums []int, i, j int) {
 	nums[i], nums[j] = nums[j], nums[i]
 }
