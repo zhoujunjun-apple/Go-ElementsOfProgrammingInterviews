@@ -42,6 +42,25 @@ func NativeStrToInt(intStr string) int {
 	return intVal
 }
 
+//SubstractStrToInt function use '0' as the base to convert each digit rune to integer
+func SubstractStrToInt(intStr string) int {
+	intVal := 0
+	intNeg := false
+
+	if intStr[0] == '-' {
+		intNeg = true
+		intStr = intStr[1:]
+	}
+
+	for _, b := range intStr {
+		intVal = intVal*10 + int(b-'0') //use '0' as substract base
+	}
+	if intNeg {
+		intVal = -intVal
+	}
+	return intVal
+}
+
 func main() {
 
 }
