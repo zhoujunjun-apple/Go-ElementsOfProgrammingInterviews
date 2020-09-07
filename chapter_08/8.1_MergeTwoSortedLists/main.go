@@ -107,6 +107,54 @@ func (sl *SingleList) Merge(newList *SingleList) {
 	}
 }
 
+//FastMerge function optimize the Merge() method
+func (sl *SingleList) FastMerge(newList *SingleList) {
+	mainTailer := sl.Header
+	subeTailer := newList.Header
+
+	var insertTailer **Node = &sl.Header
+	for subeTailer != nil {
+		//find the position in sl to insert node
+		for mainTailer != nil && mainTailer.Value <= subeTailer.Value {
+			//the following two statements cannot exchange
+			insertTailer = &(mainTailer.Next)
+			mainTailer = mainTailer.Next
+		}
+
+		//find the insert position or sl has reach the tail
+		if mainTailer != nil {
+			//mainTailer != nil, find the insert position
+
+			//new node from newList need to insert after the insertTailer node
+			*insertTailer = subeTailer           //connect sl to new added node
+			subeTailer = subeTailer.Next         //update subeTailer
+			(*insertTailer).Next = mainTailer    //connect the new added node back to sl
+			insertTailer = &(*insertTailer).Next //update insertTailer to next node
+
+			//update Length field of sl and newList
+			newList.GuardMutex.Lock()
+			newList.Length--
+			newList.GuardMutex.Unlock()
+
+			sl.GuardMutex.Lock()
+			sl.Length++
+			sl.GuardMutex.Unlock()
+		} else {
+			//mainTailer == nil, sl has reach the tail, append the rest of newList onto sl
+			*insertTailer = subeTailer
+
+			sl.GuardMutex.Lock()
+			sl.Length += newList.Length
+			sl.GuardMutex.Unlock()
+
+			newList.GuardMutex.Lock()
+			newList.Length = 0
+			newList.GuardMutex.Unlock()
+			break
+		}
+	}
+}
+
 //NativeMerge function merge two sorted single list into one
 func NativeMerge(left *SingleList, right *SingleList) *SingleList {
 	ret := SingleList{}
