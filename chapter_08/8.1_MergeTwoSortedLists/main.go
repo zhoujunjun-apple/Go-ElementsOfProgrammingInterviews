@@ -47,6 +47,66 @@ func (sl *SingleList) GetValues() []int {
 	return ret
 }
 
+//Merge function merge newList into sl
+func (sl *SingleList) Merge(newList *SingleList) {
+	mainTailer := sl.Header
+	subeTailer := newList.Header
+
+	var insertTailer *Node = nil
+	for subeTailer != nil {
+		//find the position in sl to insert node
+		for mainTailer != nil && mainTailer.Value <= subeTailer.Value {
+			insertTailer = mainTailer
+			mainTailer = mainTailer.Next
+		}
+
+		//find the insert position or sl has reach the tail
+		if mainTailer != nil {
+			//mainTailer != nil, find the insert position
+
+			//check if insert at the head of sl
+			if insertTailer == nil {
+				//insertTailer == nil, new node from newList need to insert at the head of sl
+				sl.Header = subeTailer
+				subeTailer = subeTailer.Next
+				sl.Header.Next = mainTailer
+				insertTailer = sl.Header
+			} else {
+				//new node from newList need to insert after the insertTailer node
+				insertTailer.Next = subeTailer
+				subeTailer = subeTailer.Next
+				insertTailer.Next.Next = mainTailer
+				insertTailer = insertTailer.Next
+			}
+
+			//update Length field of sl and newList
+			newList.GuardMutex.Lock()
+			newList.Length--
+			newList.GuardMutex.Unlock()
+
+			sl.GuardMutex.Lock()
+			sl.Length++
+			sl.GuardMutex.Unlock()
+		} else {
+			//mainTailer == nil, sl has reach the tail, append the rest of newList onto sl
+			if insertTailer == nil {
+				sl.Header = subeTailer
+			} else {
+				insertTailer.Next = subeTailer
+			}
+
+			sl.GuardMutex.Lock()
+			sl.Length += newList.Length
+			sl.GuardMutex.Unlock()
+
+			newList.GuardMutex.Lock()
+			newList.Length = 0
+			newList.GuardMutex.Unlock()
+			break
+		}
+	}
+}
+
 //NativeMerge function merge two sorted single list into one
 func NativeMerge(left *SingleList, right *SingleList) *SingleList {
 	ret := SingleList{}

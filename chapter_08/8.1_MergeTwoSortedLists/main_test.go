@@ -50,6 +50,51 @@ func Test_NativeMerge(t *testing.T) {
 	}
 }
 
+func Test_Merge(t *testing.T) {
+	tests := []struct {
+		s1          []int
+		s2          []int
+		expectedLen int
+	}{
+		{
+			s1:          []int{9, 7, 5, 3, 1},
+			s2:          []int{8, 6, 4, 2, 0},
+			expectedLen: 10,
+		},
+		{
+			s1:          []int{5, 4, 3, 2, 1},
+			s2:          []int{9, 6},
+			expectedLen: 7,
+		},
+		{
+			s1:          []int{8, 4, 2, 1},
+			s2:          []int{},
+			expectedLen: 4,
+		},
+		{
+			s1:          []int{},
+			s2:          []int{4, 3, 2, 1},
+			expectedLen: 4,
+		},
+		{
+			s1:          []int{19},
+			s2:          []int{6, 5, 4, 2, 0},
+			expectedLen: 6,
+		},
+	}
+
+	for _, tt := range tests {
+		mainList := SingleList{}
+		mainList.Add(tt.s1)
+
+		subList := SingleList{}
+		subList.Add(tt.s2)
+
+		mainList.Merge(&subList)
+		checkResult(t, &mainList, tt.expectedLen)
+	}
+}
+
 func checkResult(t *testing.T, ret *SingleList, expLen int) {
 	if expLen != ret.Length {
 		t.Fatalf("single list length expected=%d, got=%d", expLen, ret.Length)
