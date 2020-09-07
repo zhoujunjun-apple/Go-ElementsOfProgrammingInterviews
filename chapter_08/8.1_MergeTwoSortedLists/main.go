@@ -48,6 +48,7 @@ func (sl *SingleList) GetValues() []int {
 }
 
 //Merge function merge newList into sl
+//use double scan method. O(N+M) time and O(1) space
 func (sl *SingleList) Merge(newList *SingleList) {
 	mainTailer := sl.Header
 	subeTailer := newList.Header
@@ -108,6 +109,8 @@ func (sl *SingleList) Merge(newList *SingleList) {
 }
 
 //FastMerge function optimize the Merge() method
+//use double pointer to eliminate the IF/ELSE statements of insertTailer
+//O(N+M) time and O(1) space
 func (sl *SingleList) FastMerge(newList *SingleList) {
 	mainTailer := sl.Header
 	subeTailer := newList.Header
@@ -155,7 +158,7 @@ func (sl *SingleList) FastMerge(newList *SingleList) {
 	}
 }
 
-//NativeMerge function merge two sorted single list into one
+//NativeMerge function merge two sorted single list into one. O(N+M) time and O(N+M) space
 func NativeMerge(left *SingleList, right *SingleList) *SingleList {
 	ret := SingleList{}
 	retTailer := &ret.Header
