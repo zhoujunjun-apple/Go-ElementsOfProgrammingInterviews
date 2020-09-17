@@ -80,8 +80,11 @@ func (s *Stack) Max() (int, error) {
 // StackMax struct support Max() operation in O(1) time and O(N) space
 type StackMax struct {
 	container []int //container used for saving element in stack
-	maxer     []int //maxer used for recording the maximum value of current stack. update this slice in Push operation
-	length    int
+	//maxer used for recording the maximum value of current stack.
+	//the length of maxer and container is the same
+	//update this slice in Push operation
+	maxer  []int
+	length int
 }
 
 // Empty function check if stack is empty
@@ -141,6 +144,97 @@ func (sm *StackMax) Max() (int, error) {
 		return -1, ErrstackEmpty
 	}
 	return sm.maxer[sm.length-1], nil
+}
+
+//StackFastMax struct improve the space complexity of maxer variable compared with StackMax type
+//Under the Best-Case, the space complexity of Max operation is O(1) other than O(N) in StackMax type
+type StackFastMax struct {
+	containter []int
+	length     int
+	maxer      []MaxItem
+}
+
+//MaxItem type record the current max value and it's occurrance time
+type MaxItem struct {
+	max   int //the max value in current stack
+	count int //the count of max value in current stack
+}
+
+//Empty function check if stack is empty
+func (sfm *StackFastMax) Empty() bool {
+	return sfm.length > 0
+}
+
+//Push function add element at the top of stack and update maxer
+func (sfm *StackFastMax) Push(i int) {
+	//add element at the top of stack
+	sfm.containter = append(sfm.containter, i)
+	sfm.length++
+
+	//update maxer
+	if len(sfm.maxer) > 0 {
+		last := sfm.maxer[len(sfm.maxer)-1]
+		if last.max < i {
+			newMax := MaxItem{max: i, count: 1}
+			sfm.maxer = append(sfm.maxer, newMax)
+		} else {
+			last.count++
+			sfm.maxer[len(sfm.maxer)-1] = last
+		}
+	} else {
+		first := MaxItem{max: i, count: 1}
+		sfm.maxer = append(sfm.maxer, first)
+	}
+}
+
+//Pushs call Push function to add batch elements
+func (sfm *StackFastMax) Pushs(is []int) {
+	for _, i := range is {
+		sfm.Push(i)
+	}
+}
+
+//Top function peek the top element of stack
+func (sfm *StackFastMax) Top() (int, error) {
+	if sfm.Empty() {
+		return -1, ErrstackEmpty
+	}
+	top := sfm.containter[sfm.length-1]
+	return top, nil
+}
+
+//Pop function return the top element and remove it from stack,
+//then update the maxer
+func (sfm *StackFastMax) Pop() (int, error) {
+	if sfm.Empty() {
+		return -1, ErrstackEmpty
+	}
+
+	//update container
+	sfm.length--
+	top := sfm.containter[sfm.length]
+	sfm.containter = sfm.containter[:sfm.length]
+
+	//update maxer
+	nowMax := sfm.maxer[len(sfm.maxer)-1]
+	if nowMax.count > 1 {
+		//the max value remain unchanged, only need to update count
+		nowMax.count--
+		sfm.maxer[len(sfm.maxer)-1] = nowMax
+	} else {
+		//top is the last max value of nowMax.max in stack
+		sfm.maxer = sfm.maxer[:len(sfm.maxer)-1]
+	}
+
+	return top, nil
+}
+
+//Max function get the current max value of stack
+func (sfm *StackFastMax) Max() (int, error) {
+	if sfm.Empty() {
+		return -1, ErrstackEmpty
+	}
+	return sfm.maxer[len(sfm.maxer)-1].max, nil
 }
 
 func main() {
