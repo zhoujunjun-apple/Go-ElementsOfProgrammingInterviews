@@ -77,6 +77,72 @@ func (s *Stack) Max() (int, error) {
 	return max, nil
 }
 
+// StackMax struct support Max() operation in O(1) time and O(N) space
+type StackMax struct {
+	container []int //container used for saving element in stack
+	maxer     []int //maxer used for recording the maximum value of current stack. update this slice in Push operation
+	length    int
+}
+
+// Empty function check if stack is empty
+func (sm *StackMax) Empty() bool {
+	return sm.length > 0
+}
+
+// Push function add new value i onto stack and update the maxer array
+func (sm *StackMax) Push(i int) {
+	sm.container = append(sm.container, i)
+	sm.length++
+	if len(sm.maxer) > 0 {
+		maxNow := sm.maxer[len(sm.maxer)-1]
+		if maxNow < i {
+			sm.maxer = append(sm.maxer, i)
+		} else {
+			sm.maxer = append(sm.maxer, maxNow)
+		}
+	} else {
+		// sm.maxer is empty
+		sm.maxer = append(sm.maxer, i)
+	}
+}
+
+// Pushs function helps to build a stack fastly
+func (sm *StackMax) Pushs(is []int) {
+	for _, i := range is {
+		sm.Push(i)
+	}
+}
+
+// Top function peek the top element in stack
+func (sm *StackMax) Top() (int, error) {
+	if sm.Empty() {
+		return -1, ErrstackEmpty
+	}
+	return sm.container[sm.length-1], nil
+}
+
+// Pop function return the top element in stack and remove it
+func (sm *StackMax) Pop() (int, error) {
+	if sm.Empty() {
+		return -1, ErrstackEmpty
+	}
+
+	top, _ := sm.Top()
+
+	sm.length--
+	sm.container = sm.container[:sm.length]
+	sm.maxer = sm.maxer[:sm.length]
+	return top, nil
+}
+
+// Max function get the maximum value of current stack in O(1) time and O(1) space
+func (sm *StackMax) Max() (int, error) {
+	if sm.Empty() {
+		return -1, ErrstackEmpty
+	}
+	return sm.maxer[sm.length-1], nil
+}
+
 func main() {
 
 }
