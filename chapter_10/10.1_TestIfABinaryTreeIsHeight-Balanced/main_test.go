@@ -6,16 +6,19 @@ import (
 
 var tests = []struct{
 	root *TreeNode
+	height int
 	expected bool
 }{
 	{
 		root: nil,
 		expected: false,
+		height: -1,
 	},
 	{
 		root: &TreeNode{
 			value: 0,
 		},
+		height: 0,
 		expected: true,
 	},
 	{
@@ -25,6 +28,7 @@ var tests = []struct{
 				value: 1,
 			},
 		},
+		height: 1,
 		expected: true,
 	},
 	{
@@ -37,6 +41,7 @@ var tests = []struct{
 				},
 			},
 		},
+		height: 2,
 		expected: false,
 	},
 	{
@@ -52,6 +57,8 @@ var tests = []struct{
 				value: 3,
 			},
 		},
+		height: 2,
+		expected: true,
 	},
 	{
 		root: &TreeNode{
@@ -69,6 +76,7 @@ var tests = []struct{
 				},
 			},
 		},
+		height: 3,
 		expected: false,
 	},
 	{
@@ -99,8 +107,18 @@ var tests = []struct{
 				},
 			},
 		},
+		height: 4,
 		expected: false,
 	},
+}
+
+func Test_GetTreeHeight(t *testing.T) {
+	for idx, tt := range tests {
+		ret := GetTreeHeight(tt.root)
+		if ret != tt.height {
+			t.Errorf("[%d] height expected=%d, got=%d", idx, tt.height, ret)
+		}
+	}
 }
 
 func Test_IsBalancedTreeBruteForce(t *testing.T) {
