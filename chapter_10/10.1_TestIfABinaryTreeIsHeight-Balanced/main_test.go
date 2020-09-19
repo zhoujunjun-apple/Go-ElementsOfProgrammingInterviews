@@ -11,7 +11,7 @@ var tests = []struct{
 }{
 	{
 		root: nil,
-		expected: false,
+		expected: true,
 		height: -1,
 	},
 	{
