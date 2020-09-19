@@ -56,6 +56,58 @@ func IsBalancedTreeBruteForce(root *TreeNode) bool {
 	return IsBalancedTreeBruteForce(root.left) && IsBalancedTreeBruteForce(root.right)
 }
 
+//HeightBalanced struct represent a tree's height and balance
+type HeightBalanced struct {
+	height   int
+	balanced bool
+}
+
+//IsBalancedTreeCombine function improve the time complexity of IsBalancedTreeBruteForce
+//function by combing the height-calculation recursion and the balance-calculation recursion
+//since they both use postorder recursion. But the returned height is not the real height of the
+//tree when the tree is not balanced
+func IsBalancedTreeCombine(root *TreeNode) HeightBalanced {
+	if root == nil {
+		return HeightBalanced{
+			height:   -1,
+			balanced: true,
+		}
+	}
+
+	leftRet := IsBalancedTreeCombine(root.left)
+	if !leftRet.balanced {
+		return HeightBalanced{
+			//left subtree of root tree is not balanced. no need to check right subtree.
+			//so we don't know the height of right subtree. Reset root tree height to zero
+			height:   0,
+			balanced: false, //cause all the function call return
+		}
+	}
+
+	rightRet := IsBalancedTreeCombine(root.right)
+	if !rightRet.balanced {
+		return HeightBalanced{
+			height:   0,
+			balanced: false, //cause all the function call return
+		}
+	}
+
+	//left and right subtree are both balanced, check if root tree is balanced
+	//and update the height of root tree
+	ret := HeightBalanced{
+		height:   maxAddOne(leftRet.height, rightRet.height),
+		balanced: math.Abs(float64(leftRet.height-rightRet.height)) <= 1.0,
+	}
+	return ret
+}
+
+func maxAddOne(i, j int) int {
+	if i > j {
+		return i + 1
+	}
+	return j + 1
+}
+
 func main() {
 
 }

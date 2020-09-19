@@ -4,21 +4,21 @@ import (
 	"testing"
 )
 
-var tests = []struct{
-	root *TreeNode
-	height int
+var tests = []struct {
+	root     *TreeNode
+	height   int
 	expected bool
 }{
 	{
-		root: nil,
+		root:     nil,
 		expected: true,
-		height: -1,
+		height:   -1,
 	},
 	{
 		root: &TreeNode{
 			value: 0,
 		},
-		height: 0,
+		height:   0,
 		expected: true,
 	},
 	{
@@ -28,7 +28,7 @@ var tests = []struct{
 				value: 1,
 			},
 		},
-		height: 1,
+		height:   1,
 		expected: true,
 	},
 	{
@@ -41,7 +41,7 @@ var tests = []struct{
 				},
 			},
 		},
-		height: 2,
+		height:   2,
 		expected: false,
 	},
 	{
@@ -50,14 +50,14 @@ var tests = []struct{
 			left: &TreeNode{
 				value: 1,
 				left: &TreeNode{
-					value:2,
+					value: 2,
 				},
 			},
 			right: &TreeNode{
 				value: 3,
 			},
 		},
-		height: 2,
+		height:   2,
 		expected: true,
 	},
 	{
@@ -76,7 +76,7 @@ var tests = []struct{
 				},
 			},
 		},
-		height: 3,
+		height:   3,
 		expected: false,
 	},
 	{
@@ -107,7 +107,7 @@ var tests = []struct{
 				},
 			},
 		},
-		height: 4,
+		height:   4,
 		expected: false,
 	},
 }
@@ -126,6 +126,21 @@ func Test_IsBalancedTreeBruteForce(t *testing.T) {
 		ret := IsBalancedTreeBruteForce(tt.root)
 		if ret != tt.expected {
 			t.Errorf("[%d] expected=%t, got=%t", idx, tt.expected, ret)
+		}
+	}
+}
+
+func Test_IsBalancedTreeCombine(t *testing.T) {
+	for idx, tt := range tests {
+		ret := IsBalancedTreeCombine(tt.root)
+		if ret.balanced != tt.expected {
+			t.Errorf("[%d] expected=%t, got=%t", idx, tt.expected, ret.balanced)
+		}
+
+		if ret.balanced && tt.expected {
+			if ret.height != tt.height {
+				t.Errorf("[%d] height expected=%d, got=%d", idx, tt.height, ret.height)
+			}
 		}
 	}
 }
