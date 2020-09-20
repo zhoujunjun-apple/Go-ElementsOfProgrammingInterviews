@@ -6,35 +6,41 @@ import (
 
 //add new test case at the end of tests slice
 var tests = []struct {
-	root    *TreeNode
-	expSize int
+	root           *TreeNode //the root node of test tree
+	expSize        int       //the expected size of largest subtree
+	isRootComplete bool      //is the test tree a complete tree?
 }{
 	{ //0, index value of tests slice
-		root:    nil,
-		expSize: 0,
+		root:           nil,
+		expSize:        0,
+		isRootComplete: true,
 	},
 	{ //1
-		root:    &TreeNode{},
-		expSize: 1,
+		root:           &TreeNode{},
+		expSize:        1,
+		isRootComplete: true,
 	},
 	{ //2
 		root: &TreeNode{
 			left: &TreeNode{},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: true,
 	},
 	{ //3
 		root: &TreeNode{
 			right: &TreeNode{},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //4
 		root: &TreeNode{
 			left:  &TreeNode{},
 			right: &TreeNode{},
 		},
-		expSize: 3,
+		expSize:        3,
+		isRootComplete: true,
 	},
 	{ //5
 		root: &TreeNode{
@@ -42,7 +48,8 @@ var tests = []struct {
 				left: &TreeNode{},
 			},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: false,
 	},
 	{ //6
 		root: &TreeNode{
@@ -50,7 +57,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //7
 		root: &TreeNode{
@@ -58,7 +66,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //8
 		root: &TreeNode{
@@ -66,7 +75,8 @@ var tests = []struct {
 				left: &TreeNode{},
 			},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: false,
 	},
 	{ //9
 		root: &TreeNode{
@@ -75,7 +85,8 @@ var tests = []struct {
 			},
 			right: &TreeNode{},
 		},
-		expSize: 4,
+		expSize:        4,
+		isRootComplete: true,
 	},
 	{ //10
 		root: &TreeNode{
@@ -85,7 +96,8 @@ var tests = []struct {
 				},
 			},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: false,
 	},
 	{ //11
 		root: &TreeNode{
@@ -95,7 +107,8 @@ var tests = []struct {
 				},
 			},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //12
 		root: &TreeNode{
@@ -104,7 +117,8 @@ var tests = []struct {
 			},
 			right: &TreeNode{},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //13
 		root: &TreeNode{
@@ -113,7 +127,8 @@ var tests = []struct {
 				left: &TreeNode{},
 			},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: false,
 	},
 	{ //14
 		root: &TreeNode{
@@ -122,7 +137,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 1,
+		expSize:        1,
+		isRootComplete: false,
 	},
 	{ //15
 		root: &TreeNode{
@@ -131,7 +147,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 3,
+		expSize:        3,
+		isRootComplete: false,
 	},
 	{ //16
 		root: &TreeNode{
@@ -140,7 +157,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 3,
+		expSize:        3,
+		isRootComplete: false,
 	},
 	{ //17
 		root: &TreeNode{
@@ -159,7 +177,8 @@ var tests = []struct {
 			},
 			right: &TreeNode{},
 		},
-		expSize: 6,
+		expSize:        6,
+		isRootComplete: false,
 	},
 	{ //18
 		root: &TreeNode{
@@ -175,7 +194,8 @@ var tests = []struct {
 				},
 			},
 		},
-		expSize: 5,
+		expSize:        5,
+		isRootComplete: false,
 	},
 	{ //19
 		root: &TreeNode{
@@ -186,7 +206,8 @@ var tests = []struct {
 				left: &TreeNode{},
 			},
 		},
-		expSize: 2,
+		expSize:        2,
+		isRootComplete: false,
 	},
 	{ //20
 		root: &TreeNode{
@@ -198,7 +219,8 @@ var tests = []struct {
 				left: &TreeNode{},
 			},
 		},
-		expSize: 6,
+		expSize:        6,
+		isRootComplete: true,
 	},
 	{ //21
 		root: &TreeNode{
@@ -211,7 +233,8 @@ var tests = []struct {
 				right: &TreeNode{},
 			},
 		},
-		expSize: 7,
+		expSize:        7,
+		isRootComplete: true,
 	},
 	{ //22
 		root: &TreeNode{
@@ -223,7 +246,8 @@ var tests = []struct {
 			},
 			right: &TreeNode{},
 		},
-		expSize: 3,
+		expSize:        3,
+		isRootComplete: false,
 	},
 }
 
@@ -233,6 +257,15 @@ func Test_LargestCompleteSubtree(t *testing.T) {
 		if ret.subtreeSize != tt.expSize {
 			t.Errorf("[%d] largest complete subtree expected=%d, got=%d.",
 				idx, tt.expSize, ret.subtreeSize)
+		}
+	}
+}
+
+func Test_IsTreeComplete(t *testing.T) {
+	for idx, tt := range tests {
+		ret := IsTreeComplete(tt.root)
+		if ret != tt.isRootComplete {
+			t.Errorf("[%d] expected=%t, got=%t", idx, tt.isRootComplete, ret)
 		}
 	}
 }

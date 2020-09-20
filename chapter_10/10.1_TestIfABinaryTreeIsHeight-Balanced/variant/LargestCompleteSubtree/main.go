@@ -1,5 +1,6 @@
 package main
 
+//TreeNode represent a binary tree node
 type TreeNode struct {
 	value int
 	left  *TreeNode
@@ -8,15 +9,24 @@ type TreeNode struct {
 
 //SizeComplete struct record complete subtree info
 type SizeComplete struct {
-	height      int  //height of this tree
-	isFull      bool //whether this tree is full
-	isComplete  bool //whether this tree is complete
-	subtreeSize int  //the largest complete subtree size under this tree
+	root        *TreeNode //the root node of the largest complete subtree
+	height      int       //height of this tree
+	isFull      bool      //whether this tree is full
+	isComplete  bool      //whether this tree is complete
+	subtreeSize int       //the largest complete subtree size under this tree
 }
 
+//LargestCompleteSubtree function find the largest complete subtree in root tree
+//and record this subtree information on return
 func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 	if root == nil {
-		return SizeComplete{isFull: true, isComplete: true, subtreeSize: 0, height: -1}
+		return SizeComplete{
+			isFull:      true,
+			isComplete:  true,
+			subtreeSize: 0,
+			height:      -1,
+			root:        nil,
+		}
 	}
 
 	leftRet := LargestCompleteSubtree(root.left)
@@ -25,6 +35,7 @@ func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 	defaultTreeInfo := SizeComplete{
 		isFull:      false,
 		isComplete:  false,
+		root:        GetLargerRoot(leftRet, rightRet),
 		height:      MaxInt(leftRet.height, rightRet.height),
 		subtreeSize: MaxInt(leftRet.subtreeSize, rightRet.subtreeSize),
 	}
@@ -43,6 +54,7 @@ func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 				//left complete subtree is a full tree.
 				//left and right subtree can combine into a bigger complete tree
 				return SizeComplete{
+					root:        root,
 					isFull:      leftRet.isFull && rightRet.isFull,
 					isComplete:  true,
 					height:      leftRet.height + 1,
@@ -60,6 +72,7 @@ func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 				//recheck right subtree's size
 				if rightRet.subtreeSize >= int(leftRet.subtreeSize/2) {
 					return SizeComplete{
+						root:        root,
 						isFull:      false,
 						isComplete:  true,
 						height:      leftRet.height + 1,
@@ -75,6 +88,7 @@ func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 				wantRightSize := PowerInt(2, leftRet.height) - 1
 				if rightRet.isFull && rightRet.subtreeSize == wantRightSize {
 					return SizeComplete{
+						root:        root,
 						isFull:      false,
 						isComplete:  true,
 						height:      leftRet.height + 1,
@@ -89,6 +103,14 @@ func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 		//one of subtree isn't a complete tree. only need to record size value of the larger one
 		return defaultTreeInfo
 	}
+}
+
+//IsTreeComplete function check if root tree is a complete tree
+//It use LargestCompleteSubtree function to find the largest
+//complete subtree in root tree, then compare the subtree and root tree
+func IsTreeComplete(root *TreeNode) bool {
+	ret := LargestCompleteSubtree(root)
+	return ret.root == root
 }
 
 //MaxInt function return the maximum value between two integer
@@ -111,6 +133,14 @@ func PowerInt(base, power int) int {
 		power--
 	}
 	return ret
+}
+
+//GetLargerRoot function return the root node pointer of larger complete subtree
+func GetLargerRoot(left, right SizeComplete) *TreeNode {
+	if left.subtreeSize > right.subtreeSize {
+		return left.root
+	}
+	return right.root
 }
 
 func main() {
