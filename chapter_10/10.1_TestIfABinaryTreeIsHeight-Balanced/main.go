@@ -36,8 +36,8 @@ func GetTreeHeight(root *TreeNode) int {
 //= k*N - (1+2+4+...+2^(k-1)) + (2^k) * F(N/(2^k))
 //= N*(lgN) - (N) + N
 //= N*(lgN)
-//Space complexity: O(N) because each recursive function call
-//allocate O(1) space onto stack under the Worst-Case
+//Space complexity: O(height of tree) because each recursive function call
+//allocate O(1) space onto stack
 func IsBalancedTreeBruteForce(root *TreeNode) bool {
 	if root == nil {
 		//A empty tree is a balanced tree
