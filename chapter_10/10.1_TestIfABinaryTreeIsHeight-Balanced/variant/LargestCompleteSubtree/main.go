@@ -18,6 +18,10 @@ type SizeComplete struct {
 
 //LargestCompleteSubtree function find the largest complete subtree in root tree
 //and record this subtree information on return
+//This function recursively visit each node in root tree, so O(N) time
+//At each node, there are O(1) space needed. Recursive call of this function
+//makes the call stack implicitly grow. The height of root tree is the upper bound
+//of call stack, so O(height of tree) is space complexity.
 func LargestCompleteSubtree(root *TreeNode) SizeComplete {
 	if root == nil {
 		return SizeComplete{
