@@ -1,0 +1,2 @@
+### FindNonK-BalancedNode
+Define a node in a binary tree to be k-balanced if the difference in the number of nodes in its left and right subtrees is no more than k. Design an algorithm that takes as input a binary tree and positive integer k, and returns a node in the binary tree such that the node is not k-balanced, but all of its descendants are k-balanced.
